@@ -17,3 +17,9 @@
         * I plotted the centers when the ball is actually present in frame in "centers_correct.txt" and when not in "centers_false.txt".
         * Key thing to notice is that in a "false center" case, there are patches of nothing detected 
         * Let's try adding a THRESHOLD to number of "detected center" by thr function before we actually set out state to "Ball detected"  
+        * In my experiment: I tracked number of "false deteced" frames in a cotinum
+            * mean: 5.63
+            * std dev: 10.9
+            * min: 1
+            * max: 196
+        * Let's just keep the minimum number of frmaes as a hyperparamter and tune

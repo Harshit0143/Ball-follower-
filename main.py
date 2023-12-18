@@ -79,11 +79,15 @@ def detect_objects(frame):
                 direction = 'Right'
             else:
                 direction = 'Straight'
+            
+            debug('centers_false' , center)
             add_text_detected(frame , center , direction)
+
             
     if direction == None:
         direction = 'Stop'
         DETECTED = False
+        debug('centers_false' , (-1 , -1))
         add_text_lost(frame)
 
  
