@@ -45,6 +45,7 @@ def add_text_lost(frame):
 
 
 def detect_objects(frame):
+    global DETECTED
     frame = imutils.resize(frame , width = 600)
     blurred = cv2.GaussianBlur(frame , (11 , 11) , 0)
     hsv = cv2.cvtColor(blurred , cv2.COLOR_BGR2HSV)
@@ -69,6 +70,7 @@ def detect_objects(frame):
         M = cv2.moments(c)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
         if radius > MIN_RADIUS:
+            DETECTED = True
             cv2.circle(frame, (int(x), int(y)), int(radius),(0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
             if  center[0] < mid_x - LATERAL_THRESHOLD:
@@ -81,19 +83,20 @@ def detect_objects(frame):
             
     if direction == None:
         direction = 'Stop'
+        DETECTED = False
         add_text_lost(frame)
  
 
     return direction
 
 class machine:
-    def __init__(self , com_port , left0 , left1 , right0 , right1 , stop_led , running_led):
+    def __init__(self , com_port , left0 , left1 , right0 , right1 , led_lost , led_found):
         print("Establishing Bluetooth Connection with Arduino")
         self.board = pyfirmata.Arduino(com_port)
         print("Bluetooth Communication Successfully started")
         self._left0_ , self._left1_ = left0 , left1
         self._right0_ , self._right1_ = right0 , right1
-        self._stop_led_ , self._running_led_ = stop_led , running_led
+        self._led_lost_  , self._led_found_ = led_lost , led_found
 
     def _left_wheel_(self , direction):
         # direction: True if front , False if back 
@@ -133,12 +136,23 @@ class machine:
         self._right_stop_()
         self._left_stop_()
 
+    
 
-    def led_stop_state(self , state):
-        self.board.digital[self._stop_led_].write(state)
 
-    def led_running_state(self , state):
-        self.board.digital[self._running_led_].write(state)
+    def led_detected_state(self , state):
+        # state True if object detected
+        self.board.digital[self._led_found_].write(state)
+        self.board.digital[self._led_lost_].write(not state)
+        
+    def blink(self):
+        for i in range(10):
+            self.board.digital[self._led_found_].write(True)
+            self.board.digital[self._led_lost_].write(True)
+            time.sleep(0.25)
+            self.board.digital[self._led_found_].write(False)
+            self.board.digital[self._led_lost_].write(False)
+            time.sleep(0.25)
+
 
 # now turn till LOWER THreshold and get disturbed only if crosses higher threshold
 
@@ -157,47 +171,50 @@ if __name__ == '__main__':
     cap = cv2.VideoCapture(url)
 
     ##### Let's ssee later the coloir ranges
+    MIN_RADIUS = 10
+    TURNING = False
+    DETECTED = False
+    SEARCHING = None
+    LATERAL_THRESHOLD = 100
     GREEN_LOWER = (29, 86, 6)
     GREEN_UPPER = (64, 255, 255)
-    MIN_RADIUS = 10
-    LATERAL_THRESHOLD = 100
-    TURNING = False
-    WAIT_TIME = 2
     car = machine('COM3' , 10 , 11 , 9 , 8 , 13 , 7)
-    car.stop()
-    car.front()
-    time.sleep(5)
-    car.stop()
-    sys.exit()
+    car.blink()
+    _t_start_ = None
 
-    car.led_stop_state(False)
-    time.sleep(WAIT_TIME)
-    car.led_stop_state(False)
     while(True):
-        car.led_running_state(True)
         ret , frame = cap.read()
         if not ret:
             print("No video feed!")
             break
     
         direction = detect_objects(frame)
+        car.led_detected_state(DETECTED)
+        if DETECTED:
+            SEARCHING = False
 
         if direction == 'Left':
-            car.front()
+            car.left()
         elif direction == 'Right':
-            car.front()
-        elif direction == 'Stop':
-            car.front()
+            car.right()
+        elif direction == 'Stop': # DETECTED = FALSE
+            if SEARCHING:
+                t_curr =  time.time()
+                if t_curr - _t_start_ > 20:
+                    break
+                else:
+                    car.left()
+            else:
+                SEARCHING = True
+                _t_start_ = time.time()
+
         else:
             car.front()
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     car.stop()
-    car.led_running_state(False)
-    car.led_stop_state(True)
-    time.sleep(WAIT_TIME)
-    car.led_stop_state(False)
+    car.blink()
     cap.release()
     cv2.destroyAllWindows()
 
