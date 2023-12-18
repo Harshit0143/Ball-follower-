@@ -25,9 +25,9 @@ def add_text_detected(frame , center , direction):
     text_y = center[1] + text_size[1] // 2
     cv2.putText(frame, direction, (text_x, text_y), font, font_scale, font_color, font_thickness)
     
-    text_size = cv2.getTextSize("Ball detected" , font, font_scale, font_thickness)[0]
-    cv2.putText(frame, "Ball detected", (0, 3 +  text_size[1]), font, font_scale, font_color, font_thickness)
-    cv2.imshow('Ball Position', frame)
+    text_size = cv2.getTextSize(DISPLAY_TEXT[not SEARCHING] , font, font_scale, font_thickness)[0]
+    cv2.putText(frame, DISPLAY_TEXT[not SEARCHING] , (0, 3 +  text_size[1]), font, font_scale, font_color, font_thickness)
+    cv2.imshow(FRAME_TITLE , frame)
 
 def add_text_lost(frame):
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -37,9 +37,9 @@ def add_text_lost(frame):
 
     font_color = (255, 0 , 0)  # BGR color (white in this case)
     font_thickness = 3
-    text_size = cv2.getTextSize("Ball lost" , font, font_scale, font_thickness)[0]
-    cv2.putText(frame, "Ball lost", (0, 3 +  text_size[1]), font, font_scale, font_color, font_thickness)
-    cv2.imshow('Ball Position', frame)
+    text_size = cv2.getTextSize(DISPLAY_TEXT[0] , font, font_scale, font_thickness)[0]
+    cv2.putText(frame, DISPLAY_TEXT[0] , (0, 3 +  text_size[1]), font, font_scale, font_color, font_thickness)
+    cv2.imshow(FRAME_TITLE , frame)
 
 
 
@@ -62,7 +62,7 @@ def detect_objects(frame):
     line_color = (0, 0, 255)  # BGR color (green in this case)
     line_thickness = 2
     direction = None
-    cv2.line(frame, (mid_x, 0), (mid_x, height), line_color, line_thickness)
+    cv2.line(frame , (mid_x , 0) , (mid_x , height) , line_color , line_thickness)
 
     if len(cnts) > 0:
         c = max(cnts, key = cv2.contourArea)
@@ -70,7 +70,6 @@ def detect_objects(frame):
         M = cv2.moments(c)
         center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
         if radius > MIN_RADIUS:
-            DETECTED = True
             cv2.circle(frame, (int(x), int(y)), int(radius),(0, 255, 255), 2)
             cv2.circle(frame, center, 5, (0, 0, 255), -1)
             if  center[0] < mid_x - LATERAL_THRESHOLD:
@@ -79,19 +78,14 @@ def detect_objects(frame):
                 direction = 'Right'
             else:
                 direction = 'Straight'
-            
-            debug('centers_false' , center)
+            DETECTED = True            
             add_text_detected(frame , center , direction)
 
             
     if direction == None:
         direction = 'Stop'
         DETECTED = False
-        debug('centers_false' , (-1 , -1))
         add_text_lost(frame)
-
- 
-
     return direction
 
 class machine:
@@ -153,10 +147,10 @@ class machine:
         for i in range(10):
             self.board.digital[self._led_found_].write(True)
             self.board.digital[self._led_lost_].write(True)
-            time.sleep(0.25)
+            time.sleep(WAIT_TIME)
             self.board.digital[self._led_found_].write(False)
             self.board.digital[self._led_lost_].write(False)
-            time.sleep(0.25)
+            time.sleep(WAIT_TIME)
     
 def debug(filename , obj):
     with open (filename , 'a') as file:
@@ -179,18 +173,21 @@ if __name__ == '__main__':
     auth_header = f'Basic {base64_credentials}'
     headers = {'Authorization': auth_header}
     cap = cv2.VideoCapture(url)
-
+    DISPLAY_TEXT = ["Ball Lost" , "Ball Detected"]
     ##### Let's ssee later the coloir ranges
     MIN_RADIUS = 10
-    TURNING = False
     DETECTED = False
     SEARCHING = None
+    WAIT_TIME = 0.05
+    FRAME_TITLE = 'Camera View'
+    STABLE_TIME = 1
     LATERAL_THRESHOLD = 100
+    FULL_ROTATION_TIME = 1
     GREEN_LOWER = (29, 86, 6)
     GREEN_UPPER = (64, 255, 255)
     car = machine('COM3' , 10 , 11 , 9 , 8 , 13 , 7)
     car.blink()
-    _t_start_ = None
+    _t_start_ = 0
 
     while(True):
         ret , frame = cap.read()
@@ -199,18 +196,19 @@ if __name__ == '__main__':
             break
     
         direction = detect_objects(frame)
-        car.led_detected_state(DETECTED)
-        if DETECTED:
+        car.led_detected_state(not SEARCHING and DETECTED)
+        delta =  time.time() - _t_start_
+
+        if SEARCHING and DETECTED and delta > STABLE_TIME:
             SEARCHING = False
 
-        if direction == 'Left':
+        if not SEARCHING and direction == 'Left':
             car.left()
-        elif direction == 'Right':
+        elif not SEARCHING and direction == 'Right':
             car.right()
-        elif direction == 'Stop': # DETECTED = FALSE
+        elif SEARCHING or direction == 'Stop': 
             if SEARCHING:
-                t_curr =  time.time()
-                if t_curr - _t_start_ > 20:
+                if delta > FULL_ROTATION_TIME:
                     break
                 else:
                     car.left()

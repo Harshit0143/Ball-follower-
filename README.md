@@ -22,4 +22,9 @@
             * std dev: 10.9
             * min: 1
             * max: 196
+        * I set a time threshold for the amount of time an object is detected to actually consider it the ball. 
+        * With a threshold too large it avoids false postive but the actual ball to.
+        * With a threshild too small it attracts "false positives"
         * Let's just keep the minimum number of frmaes as a hyperparamter and tune
+        * STABLE_TIME and FULL_ROTATION time depend on battery levels.
+ 
