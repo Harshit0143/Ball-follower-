@@ -165,7 +165,7 @@ if __name__ == '__main__':
     DISPLAY_TEXT = ["Ball Lost" , "Ball Detected"]
     MIN_RADIUS = 10
     DETECTED = False
-    SEARCHING = None
+    SEARCHING = False
     WAIT_TIME = 0.05
     FRAME_TITLE = 'Camera View'
     STABLE_TIME = 1
