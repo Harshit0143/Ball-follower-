@@ -1,10 +1,15 @@
-# Ball-follower-
- 
-# Current problems:
-    * loose connections: need a motor shield 
-    * unstable chassis: buy a chassis
-    * better power source: phone looks like a very good source but that connector is painful
-# Resolved all above
+# Ball-follower-car
+
+
+
+
+# Going through the construction:
+###  Current problems:
+* - [x] Loose connections: need a `Motor Driver Shield` 
+* - [x] Unstable/ weak chassis: Need `chassis` and proper way to fix `BO motor` to it. 
+* - [ ] Better power source: The `9V Battery` gets dischargerd too quickly.  
+
+[x] Resolved all above
 
 # Current problems:
     * Not properly detecting when there is no ball in the frame: "unconfident" predictions 

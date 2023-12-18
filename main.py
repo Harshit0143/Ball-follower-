@@ -15,9 +15,6 @@ import sys
 def add_text_detected(frame , center , direction):
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 1
-    height , width , _ = frame.shape
-    
-
     font_color = (255, 0 , 0)  # BGR color (white in this case)
     font_thickness = 3
     text_size = cv2.getTextSize(direction , font, font_scale, font_thickness)[0]
@@ -32,10 +29,7 @@ def add_text_detected(frame , center , direction):
 def add_text_lost(frame):
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 1
-    height , width , _ = frame.shape
-    
-
-    font_color = (255, 0 , 0)  # BGR color (white in this case)
+    font_color = (255, 0 , 0)  
     font_thickness = 3
     text_size = cv2.getTextSize(DISPLAY_TEXT[0] , font, font_scale, font_thickness)[0]
     cv2.putText(frame, DISPLAY_TEXT[0] , (0, 3 +  text_size[1]), font, font_scale, font_color, font_thickness)
@@ -135,11 +129,8 @@ class machine:
         self._right_stop_()
         self._left_stop_()
 
-    
-
-
     def led_detected_state(self , state):
-        # state True if object detected
+        # state True if object detected else False
         self.board.digital[self._led_found_].write(state)
         self.board.digital[self._led_lost_].write(not state)
         
@@ -153,12 +144,10 @@ class machine:
             time.sleep(WAIT_TIME)
     
 def debug(filename , obj):
+    # prints line by line into 'filename' : txt file
     with open (filename , 'a') as file:
         file.write(str(obj) + '\n')
 
-
-
-# now turn till LOWER THreshold and get disturbed only if crosses higher threshold
 
 if __name__ == '__main__':
 
@@ -174,7 +163,6 @@ if __name__ == '__main__':
     headers = {'Authorization': auth_header}
     cap = cv2.VideoCapture(url)
     DISPLAY_TEXT = ["Ball Lost" , "Ball Detected"]
-    ##### Let's ssee later the coloir ranges
     MIN_RADIUS = 10
     DETECTED = False
     SEARCHING = None
@@ -187,8 +175,8 @@ if __name__ == '__main__':
     GREEN_UPPER = (64, 255, 255)
     car = machine('COM3' , 10 , 11 , 9 , 8 , 13 , 7)
     car.blink()
-    _t_start_ = 0
 
+    _t_start_ = 0
     while(True):
         ret , frame = cap.read()
         if not ret:
@@ -215,10 +203,8 @@ if __name__ == '__main__':
             else:
                 SEARCHING = True
                 _t_start_ = time.time()
-
         else:
             car.front()
-    
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
