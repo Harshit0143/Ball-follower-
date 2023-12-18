@@ -9,7 +9,7 @@ from imutils.video import VideoStream
 import imutils
 import pyfirmata
 import time
-import sys
+
 
 
 def add_text_detected(frame , center , direction):
