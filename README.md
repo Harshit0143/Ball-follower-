@@ -1,22 +1,39 @@
-# Ball-follower-car
+# Ball-follower
 
+### Step 1: Getting the camera feed to the pc
+* I used the [IP Webcam app](https://play.google.com/store/apps/details?id=com.pas.webcam&pcampaignid=web_share)  to send my `Smartphone` camera feed to my `Laptop` via `WiFi`.
+* Used thiese settings: 
+    - Added `Login/password`
+    - `Video Resolution`: `160x961`
+    - `Photo Resolution`: `160x961`
+    - `Quaity`: `50`
+    - `Flip`: `No`
+    - `FPS Limit`: `No limit`
+   
+* Loss of details due to the low `resolution` and `quality` used don't affect out purpose later, we're anyway going to `blurr` down the image while processing (can be spotted in the code)
+* Go to `URL: http://<username>:<password>@<ip_address>:<port>/video` to see your camera feed.
 
-
+### Step 2: Python code for ball tracking
+* I referred [this](https://pyimagesearch.com/2015/09/14/ball-tracking-with-opencv/) for the `Python` code to detect the `Ball` using `OpenCV`
+ 
 
 # Going through the construction:
-###  Current problems:
+###  Day 1 - 2 :
+* I first wanted 
+
+###  Day 3 : Problems:
 * - [x] Loose connections: need a `Motor Driver Shield` 
 * - [x] Unstable/ weak chassis: Need `chassis` and proper way to fix `BO motor` to it. 
 * - [ ] Better power source: The `9V Battery` gets dischargerd too quickly.  
 
-[x] Resolved all above
 
-# Current problems:
-    * Not properly detecting when there is no ball in the frame: "unconfident" predictions 
-    # What can be done?
+
+### Day 2 : problems:
+* - [] Not properly detecting when there is no ball in the frame: "unconfident" predictions 
+* - []# What can be done?
         * Maintainig a queue for this unstabeleness to look for a smooth change. That might help in detecting "false detection"
         * Tuning hyperparamters: Is there a way to get prediction confidence?
-    * This should likely be the last problem we face
+* This should likely be the last problem we face
 
     * Solution:
         * I plotted the centers when the ball is actually present in frame in "centers_correct.txt" and when not in "centers_false.txt".
