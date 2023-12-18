@@ -86,39 +86,30 @@ def detect_objects(frame):
     return direction
 
 
-   
 def right_front():
-    board.digital[5].write(0)
-    board.digital[6].write(1)
+    board.digital[RIGHT0].write(0)
+    board.digital[RIGHT1].write(1)
 
 
 def right_back():
-    board.digital[5].write(1)
-    board.digital[6].write(0)
+    global RIGHT0 , RIGHT1
+    board.digital[RIGHT0].write(1)
+    board.digital[RIGHT1].write(0)
 
 def left_front():
-    board.digital[9].write(1)
-    board.digital[10].write(0)
+    board.digital[LEFT0].write(1)
+    board.digital[LEFT1].write(0)
 
 def left_back():
-    board.digital[9].write(0)
-    board.digital[10].write(1)
+    board.digital[LEFT0].write(0)
+    board.digital[LEFT1].write(1)
 
 def right_stop():
-    board.digital[5].write(0)
-    board.digital[6].write(0)
-
+    board.digital[RIGHT0].write(0)
+    board.digital[RIGHT1].write(0)
 def left_stop():
-    board.digital[9].write(0)
-    board.digital[10].write(0)
-
-def car_front():
-    left_front()
-    right_front()
-
-def car_back():
-    left_back()
-    right_back()
+    board.digital[LEFT0].write(0)
+    board.digital[LEFT1].write(0)
 
 def car_left():
     left_back()
@@ -128,9 +119,16 @@ def car_right():
     right_back()
     left_front()
 
+def car_front():
+    left_front()
+    right_front()
+def car_back():
+    left_back()
+    right_back()
 def car_stop():
     right_stop()
     left_stop()
+
 
 def led_state(state):
     board.digital[13].write(state)
@@ -161,8 +159,12 @@ if __name__ == '__main__':
     print("Bluetooth Communication Successfully started")
     led_state(True)
     TURNING = False
-
-
+    LEFT0 = 10
+    LEFT1 =  11
+    RIGHT0 = 9
+    RIGHT1 = 8  
+    left_stop()
+    right_stop()
     while(True):
         ret, frame = cap.read()
         if not ret:
@@ -172,9 +174,9 @@ if __name__ == '__main__':
         direction = detect_objects(frame)
         # print(direction)
         if direction == 'Left':
-            car_front()
+            car_left()
         elif direction == 'Right':
-            car_front()
+            car_right()
         else:
             car_front()
             

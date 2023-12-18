@@ -14,47 +14,7 @@ def right_front():
 def right_back():
     global RIGHT0 , RIGHT1
     board.digital[RIGHT0].write(1)
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-board.digital[RIGHT1].write(0)
+    board.digital[RIGHT1].write(0)
 
 def left_front():
     global LEFT0 , LEFT1
@@ -108,7 +68,7 @@ if __name__ == '__main__':
 
 
     while True:
-        right_front()
+        car_front()
     board.digital[13].write(0)
     left_stop()
     right_stop()
