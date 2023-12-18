@@ -85,6 +85,7 @@ def detect_objects(frame):
         direction = 'Stop'
         DETECTED = False
         add_text_lost(frame)
+
  
 
     return direction
@@ -152,6 +153,11 @@ class machine:
             self.board.digital[self._led_found_].write(False)
             self.board.digital[self._led_lost_].write(False)
             time.sleep(0.25)
+    
+def debug(filename , obj):
+    with open (filename , 'a') as file:
+        file.write(str(obj) + '\n')
+
 
 
 # now turn till LOWER THreshold and get disturbed only if crosses higher threshold
@@ -210,6 +216,7 @@ if __name__ == '__main__':
 
         else:
             car.front()
+    
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
