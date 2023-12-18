@@ -155,7 +155,7 @@ if __name__ == '__main__':
     GREEN_LOWER = (29, 86, 6)
     GREEN_UPPER = (64, 255, 255)
     MIN_RADIUS = 1
-    LATERAL_THRESHOLD = 50
+    LATERAL_THRESHOLD = 100
     print("Establishing Bluetooth Connection with Arduino")
     board = pyfirmata.Arduino('COM3')
     print("Bluetooth Communication Successfully started")
@@ -172,9 +172,9 @@ if __name__ == '__main__':
         direction = detect_objects(frame)
         # print(direction)
         if direction == 'Left':
-            car_left()
+            car_front()
         elif direction == 'Right':
-            car_right()
+            car_front()
         else:
             car_front()
             
