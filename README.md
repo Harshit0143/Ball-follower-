@@ -24,7 +24,6 @@
 * Now we just need to write simple `Python code` to control the robot, no complex `Arduino` code (which i initally feard, I thought the `instructions` will have to be sent to the `Arduino` like `Left` , `Right` etc and how to implement these will be processed in the `Arduino`). This makes adding new featured and debugging very simple.
 
 ### Step 4: Coding and Debugging
-import 
 * For using `OpenCV` and `pyfirmata` both, you'll need to set up a `Virtual Environment` that uses [Python 3.8](https://www.python.org/downloads/release/python-380/).
 * The key idea is that if the `ball` center is to the `left` of the `middle vertical line`, the robot needs to move to the `left` and analogously for `right`.
 * In such a setting, the robot will almost never move `straight`. We need to set `LATERAL_THRESHOLD` to soften the above. So the robot turns only if it's atleast `LATERAL THRESHOLD` away from the `middle vertical line`, measured alone `width`. This does have a small problem. We'll look at it later.
@@ -37,11 +36,14 @@ import
     def __init__(self , com_port , left0 , left1 , right0 , right1 , led_lost , led_found):
 ```
 * `led_lost` glows when `Ball` is not `Detected`, `led_found` glows when `Ball` is not `Detected`.
+* I have skipped `wiring` part of `motors` ` and `driver modules` as it's comon to most projects. 
 
 
+### Step 6: Improving function
+* 
 
-
-# Going through the construction:
+### Going through the construction
+* Lists the problems I faced at varios steps. Can be skipped. Only final working steps are given above. 
 ###  Day 1 - 2 :
 * I first wanted 
 
