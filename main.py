@@ -79,7 +79,7 @@ def detect_objects(frame):
             add_text_detected(frame , center , direction)
             
     if direction == None:
-        direction = 'S'
+        direction = 'Stop'
         add_text_lost(frame)
  
 
@@ -122,16 +122,21 @@ def car_right():
 def car_front():
     left_front()
     right_front()
+
 def car_back():
     left_back()
     right_back()
+
 def car_stop():
     right_stop()
     left_stop()
 
 
-def led_state(state):
-    board.digital[13].write(state)
+def led_stop_state(state):
+    board.digital[STOP_LED].write(state)
+
+def led_running_state(state):
+    board.digital[RUNNING_LED].write(state)
 
 # now turn till LOWER THreshold and get disturbed only if crosses higher threshold
 
@@ -152,41 +157,50 @@ if __name__ == '__main__':
     ##### Let's ssee later the coloir ranges
     GREEN_LOWER = (29, 86, 6)
     GREEN_UPPER = (64, 255, 255)
-    MIN_RADIUS = 1
+    MIN_RADIUS = 10
     LATERAL_THRESHOLD = 100
     print("Establishing Bluetooth Connection with Arduino")
     board = pyfirmata.Arduino('COM3')
     print("Bluetooth Communication Successfully started")
-    led_state(True)
     TURNING = False
     LEFT0 = 10
     LEFT1 =  11
     RIGHT0 = 9
     RIGHT1 = 8  
+    STOP_LED = 13
+    RUNNING_LED = 7
+    WAIT_TIME = 2
     left_stop()
     right_stop()
+    led_stop_state(True)
+    time.sleep(WAIT_TIME)
+    led_stop_state(False)
     while(True):
-        ret, frame = cap.read()
+        led_running_state(True)
+        ret , frame = cap.read()
         if not ret:
             print("No video feed!")
             break
     
         direction = detect_objects(frame)
-        # print(direction)
+
         if direction == 'Left':
             car_left()
         elif direction == 'Right':
             car_right()
+        elif direction == 'Stop':
+            car_stop()
         else:
             car_front()
-            
-    
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-    board.digital[13].write(0)
+
     left_stop()
     right_stop()
-    led_state(False)
+    led_running_state(False)
+    led_stop_state(True)
+    time.sleep(WAIT_TIME)
+    led_stop_state(False)
     cap.release()
     cv2.destroyAllWindows()
 
