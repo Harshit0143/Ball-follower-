@@ -64,14 +64,18 @@ if __name__ == '__main__':
     left_stop()
     right_stop()
     board.digital[13].write(0)
+    time.sleep(2)
+    board.digital[13].write(1)
+    time.sleep(1)
+    board.digital[13].write(0)
+    time.sleep(1)
     board.digital[13].write(1)
 
 
-    while True:
-        car_front()
-    board.digital[13].write(0)
-    left_stop()
-    right_stop()
+car_front()
+import time
+time.sleep(5)
+car_stop()
     
   
 

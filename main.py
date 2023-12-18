@@ -9,6 +9,7 @@ from imutils.video import VideoStream
 import imutils
 import pyfirmata
 import time
+import sys
 
 
 def add_text_detected(frame , center , direction):
@@ -85,58 +86,59 @@ def detect_objects(frame):
 
     return direction
 
+class machine:
+    def __init__(self , com_port , left0 , left1 , right0 , right1 , stop_led , running_led):
+        print("Establishing Bluetooth Connection with Arduino")
+        self.board = pyfirmata.Arduino(com_port)
+        print("Bluetooth Communication Successfully started")
+        self._left0_ , self._left1_ = left0 , left1
+        self._right0_ , self._right1_ = right0 , right1
+        self._stop_led_ , self._running_led_ = stop_led , running_led
 
-def right_front():
-    board.digital[RIGHT0].write(0)
-    board.digital[RIGHT1].write(1)
+    def _left_wheel_(self , direction):
+        # direction: True if front , False if back 
+        self.board.digital[self._left0_].write(direction)
+        self.board.digital[self._left1_].write(not direction)
+
+    def _right_wheel_(self , direction):
+        # direction: True if front , False if back 
+        self.board.digital[self._right0_].write(not direction)
+        self.board.digital[self._right1_].write(direction)
+
+    def _right_stop_(self):
+        self.board.digital[self._right0_].write(False)
+        self.board.digital[self._right1_].write(False)
+        
+    def _left_stop_(self):
+        self.board.digital[self._left0_].write(False)
+        self.board.digital[self._left1_].write(False)
+
+    def left(self):
+        self._left_wheel_(False)
+        self._right_wheel_(True)
+
+    def right(self):
+        self._left_wheel_(True)
+        self._right_wheel_(False)
+
+    def front(self):
+        self._left_wheel_(True)
+        self._right_wheel_(True)
+
+    def back(self):
+        self._left_wheel_(False)
+        self._right_wheel_(False)
+
+    def stop(self):
+        self._right_stop_()
+        self._left_stop_()
 
 
-def right_back():
-    global RIGHT0 , RIGHT1
-    board.digital[RIGHT0].write(1)
-    board.digital[RIGHT1].write(0)
+    def led_stop_state(self , state):
+        self.board.digital[self._stop_led_].write(state)
 
-def left_front():
-    board.digital[LEFT0].write(1)
-    board.digital[LEFT1].write(0)
-
-def left_back():
-    board.digital[LEFT0].write(0)
-    board.digital[LEFT1].write(1)
-
-def right_stop():
-    board.digital[RIGHT0].write(0)
-    board.digital[RIGHT1].write(0)
-def left_stop():
-    board.digital[LEFT0].write(0)
-    board.digital[LEFT1].write(0)
-
-def car_left():
-    left_back()
-    right_front()
-
-def car_right():
-    right_back()
-    left_front()
-
-def car_front():
-    left_front()
-    right_front()
-
-def car_back():
-    left_back()
-    right_back()
-
-def car_stop():
-    right_stop()
-    left_stop()
-
-
-def led_stop_state(state):
-    board.digital[STOP_LED].write(state)
-
-def led_running_state(state):
-    board.digital[RUNNING_LED].write(state)
+    def led_running_state(self , state):
+        self.board.digital[self._running_led_].write(state)
 
 # now turn till LOWER THreshold and get disturbed only if crosses higher threshold
 
@@ -159,24 +161,20 @@ if __name__ == '__main__':
     GREEN_UPPER = (64, 255, 255)
     MIN_RADIUS = 10
     LATERAL_THRESHOLD = 100
-    print("Establishing Bluetooth Connection with Arduino")
-    board = pyfirmata.Arduino('COM3')
-    print("Bluetooth Communication Successfully started")
     TURNING = False
-    LEFT0 = 10
-    LEFT1 =  11
-    RIGHT0 = 9
-    RIGHT1 = 8  
-    STOP_LED = 13
-    RUNNING_LED = 7
     WAIT_TIME = 2
-    left_stop()
-    right_stop()
-    led_stop_state(True)
+    car = machine('COM3' , 10 , 11 , 9 , 8 , 13 , 7)
+    car.stop()
+    car.front()
+    time.sleep(5)
+    car.stop()
+    sys.exit()
+
+    car.led_stop_state(False)
     time.sleep(WAIT_TIME)
-    led_stop_state(False)
+    car.led_stop_state(False)
     while(True):
-        led_running_state(True)
+        car.led_running_state(True)
         ret , frame = cap.read()
         if not ret:
             print("No video feed!")
@@ -185,22 +183,21 @@ if __name__ == '__main__':
         direction = detect_objects(frame)
 
         if direction == 'Left':
-            car_left()
+            car.front()
         elif direction == 'Right':
-            car_right()
+            car.front()
         elif direction == 'Stop':
-            car_stop()
+            car.front()
         else:
-            car_front()
+            car.front()
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    left_stop()
-    right_stop()
-    led_running_state(False)
-    led_stop_state(True)
+    car.stop()
+    car.led_running_state(False)
+    car.led_stop_state(True)
     time.sleep(WAIT_TIME)
-    led_stop_state(False)
+    car.led_stop_state(False)
     cap.release()
     cv2.destroyAllWindows()
 
