@@ -38,14 +38,12 @@
 * `led_lost` glows when `Ball` is not `Detected`, `led_found` glows when `Ball` is not `Detected`.
 * I have skipped `wiring` part of `motors` ` and `driver modules` as it's comon to most projects. 
 
-
-### Step 6: Improving function
-* 
+* For further improvements: look at `Day 2 : problems` below
 
 ### Going through the construction
 * Lists the problems I faced at varios steps. Can be skipped. Only final working steps are given above. 
 ###  Day 1 - 2 :
-* I first wanted 
+* I first wanted to build something around `Computer Vision`
 
 ###  Day 3 : Problems:
 * - [x] Loose connections: need a `Motor Driver Shield` 
@@ -53,26 +51,27 @@
 * - [ ] Better power source: The `9V Battery` gets dischargerd too quickly.  
 
 
-
 ### Day 2 : problems:
-* - [] Not properly detecting when there is no ball in the frame: "unconfident" predictions 
-* - []# What can be done?
-        * Maintainig a queue for this unstabeleness to look for a smooth change. That might help in detecting "false detection"
-        * Tuning hyperparamters: Is there a way to get prediction confidence?
-* This should likely be the last problem we face
+* - [x] There are `false positive`  predictions. When there is `ball` in frame (close enough to the robot) it works well. When it's not in the frame, it detects some object aroung it as the `ball` which is false. We hence don't want the robot to move in the direction guided by that. What can be done? I had these ideas. 
+    * Maintainig a `queue` if the `detected centers` to look for a `rapid changes` as the video showed `rapidly` changing `centers` in this case. 
+    * Tuning hyperparamters: Is there a way to get prediction confidence? (I coudldn't get this.)
+    
+* Solution:
+    * I plotted the `predicted centers` framewise when the `ball` is actually present in frame in `centers_correct.txt` and when not in `centers_false.txt`.
+    * Key thing to notice is that in a `false center` case, there are patches of `nothing detected: (-1, -1)`
 
-    * Solution:
-        * I plotted the centers when the ball is actually present in frame in "centers_correct.txt" and when not in "centers_false.txt".
-        * Key thing to notice is that in a "false center" case, there are patches of nothing detected 
-        * Let's try adding a THRESHOLD to number of "detected center" by thr function before we actually set out state to "Ball detected"  
-        * In my experiment: I tracked number of "false deteced" frames in a cotinum
-            * mean: 5.63
-            * std dev: 10.9
-            * min: 1
-            * max: 196
-        * I set a time threshold for the amount of time an object is detected to actually consider it the ball. 
-        * With a threshold too large it avoids false postive but the actual ball to.
-        * With a threshild too small it attracts "false positives"
-        * Let's just keep the minimum number of frmaes as a hyperparamter and tune
-        * STABLE_TIME and FULL_ROTATION time depend on battery levels.
+    * Let's try adding a threshold `STABLE_TIME` to number of seconds `center detected` before we actually set out state to `Ball detected`. 
+    
+    * In my experiment: I tracked number of `false deteced` frames in a cotinum
+        ```
+        mean: 5.63
+        std dev: 10.9
+        min: 1
+        max: 196
+        ```
+  
+    * When `STABLE_TIME` is too large it avoids `false postive` but the actual `ball` too. With `STABLE_TIME` too small it attracts `false positives`
+    * When no ball is `stablly detected` as describled above, the robot begins to make one full roation, if it `stablly detects` the `ball`, it continues folowing it. If it completes one full rotations, we `terminate` the program. 
+    * `FULL_ROTATION` is the time it takes to do one `360 degree` rotation. 
+    * `STABLE_TIME` and `FULL_ROTATION` time depend on battery levels.
  
