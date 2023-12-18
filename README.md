@@ -14,8 +14,23 @@
 * Go to `URL: http://<username>:<password>@<ip_address>:<port>/video` to see your camera feed.
 
 ### Step 2: Python code for ball tracking
-* I referred [this](https://pyimagesearch.com/2015/09/14/ball-tracking-with-opencv/) for the `Python` code to detect the `Ball` using `OpenCV`
- 
+* I referred [this](https://pyimagesearch.com/2015/09/14/ball-tracking-with-opencv/) for the `Python` code to detect the `Ball` using `OpenCV` in each frame.
+* There were no major changes. Just added few functions to add some text to the `frame` for easier visualisation.
+* Drew the `middle vertical line` on the frame. 
+* Need to set `GREEN_LOWER` and `GREEN_UPPER` according to colour of your ball/ 
+
+### Step 3: Setting up Arduino
+* [This video](https://youtu.be/L3wjZOAyxEE) shows how to contol your `Arduino` using `Python` code on your pc and the `HC-05` Bluetooth module. 
+* Now we just need to write simple `Python code` to control the robot, no complex `Arduino` code (which i initally feard, I thought the `instructions` will have to be sent to the `Arduino` like `Left` , `Right` etc and how to implement these will be processed in the `Arduino`). This makes adding new featured and debugging very simple.
+
+### Step 4: Coding and Debugging
+* The key idea is that if the `ball` center is to the `left` of the `middle vertical line`, the robot needs to move to the `left` and analogously for `right`
+* In such a setting, the robot will almost never move `straight`. We need to set `LATERAL_THRESHOLD` to soften the above. So the robot turns only if it's atleast `LATERAL THRESHOLD` away from the `middle vertical line`, measured alone `width`. This does have a small problem. We'll look at it later.
+
+
+
+pytohn 3.8
+
 
 # Going through the construction:
 ###  Day 1 - 2 :
