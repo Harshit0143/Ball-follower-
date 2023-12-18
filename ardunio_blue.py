@@ -4,31 +4,76 @@ import pyfirmata
 import time
 
 
-## 5 6 9 10 
+## RIGHT0 RIGHT1 LEFT0 LEFT1 
 
 def right_front():
-    board.digital[5].write(0)
-    board.digital[6].write(1)
+    board.digital[RIGHT0].write(0)
+    board.digital[RIGHT1].write(1)
 
 
 def right_back():
-    board.digital[5].write(1)
-    board.digital[6].write(0)
+    global RIGHT0 , RIGHT1
+    board.digital[RIGHT0].write(1)
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+board.digital[RIGHT1].write(0)
 
 def left_front():
-    board.digital[9].write(1)
-    board.digital[10].write(0)
+    global LEFT0 , LEFT1
+    board.digital[LEFT0].write(1)
+    board.digital[LEFT1].write(0)
 
 def left_back():
-    board.digital[9].write(0)
-    board.digital[10].write(1)
+    global LEFT0 , LEFT1
+    board.digital[LEFT0].write(0)
+    board.digital[LEFT1].write(1)
 
 def right_stop():
-    board.digital[5].write(0)
-    board.digital[6].write(0)
+    global RIGHT0 , RIGHT1
+    board.digital[RIGHT0].write(0)
+    board.digital[RIGHT1].write(0)
 def left_stop():
-    board.digital[9].write(0)
-    board.digital[10].write(0)
+    global LEFT0 , LEFT1
+    board.digital[LEFT0].write(0)
+    board.digital[LEFT1].write(0)
 
 def car_left():
     left_back()
@@ -52,11 +97,18 @@ def car_stop():
 if __name__ == '__main__':
     board = pyfirmata.Arduino('COM3')
     print("Communication Successfully started")
-    right_stop()
+    LEFT0 = 10
+    LEFT1 =  11
+    RIGHT0 = 9
+    RIGHT1 = 8       
     left_stop()
+    right_stop()
+    board.digital[13].write(0)
+    board.digital[13].write(1)
+
+
     while True:
-        board.digital[13].write(1)
-        car_front()
+        right_front()
     board.digital[13].write(0)
     left_stop()
     right_stop()
