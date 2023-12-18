@@ -46,13 +46,13 @@
 ###  Day 1-2 :
 * I first wanted to build something around `Computer Vision`. My first idea to this project is that I'd be able to run `Python` code on the `SmartPhone`. For this I was making a [Kivy](https://kivy.org) app but packing it using [Buildozer](https://buildozer.readthedocs.io/en/latest/) or [python-to-android](https://github.com/kivy/python-for-android#) using the steps given [here](https://kivy.org/doc/stable/gettingstarted/installation.html) wasn't working, and the the only thing I got was: `Build Failed`. If this worked, I wouldn't have needed my pc for the comunication. Also experimented with [ArduinoDroid - Arduino/ESP8266](https://play.google.com/store/apps/details?id=name.antonsmirnov.android.arduinodroid2&hl=en&gl=US) for the same bit it didn't work.  
 
-###  Day 3 : Problems:
+###  Day 3 :
 * - [x] Loose connections: need a `Motor Driver Shield` 
 * - [x] Unstable/ weak chassis: Need `chassis` and proper way to fix `BO motor` to it. 
 * - [ ] Better power source: The `9V Battery` gets dischargerd too quickly.  
 
 
-### Day 4 : problems:
+### Day 4 : 
 * - [x] There are `false positive`  predictions. When there is `ball` in frame (close enough to the robot) it works well. When it's not in the frame, it detects some object aroung it as the `ball` which is false. We hence don't want the robot to move in the direction guided by that. What can be done? I had these ideas. 
     * Maintainig a `queue` if the `detected centers` to look for a `rapid changes` as the video showed `rapidly` changing `centers` in this case. 
     * Tuning hyperparamters: Is there a way to get prediction confidence? (I coudldn't get this.)
