@@ -25,7 +25,9 @@
 * Now we just need to write simple `Python code` to control the robot, no complex `Arduino` code (which i initally feard, I thought the `instructions` will have to be sent to the `Arduino` like `Left` , `Right` etc and how to implement these will be processed in the `Arduino`). This makes adding new features and debugging very simple.
 
 ### Step 4: Coding and Debugging
+
 * For using `OpenCV` and `pyfirmata` both, you'll need to set up a `Virtual Environment` that uses [Python 3.8](https://www.python.org/downloads/release/python-380/).
+* Very Important: I used `pip install opencv-contrib-python`. I was facing [this](https://stackoverflow.com/questions/14655969/opencv-v1-v2-error-the-function-is-not-implemented) error. 
 * The key idea is that if the `ball` center is to the `left` of the `middle vertical line`, the robot needs to move to the `left` and analogously for `right`.
 * In such a setting, the robot will almost never move `straight`. We need to set `LATERAL_THRESHOLD` to soften the above. So the robot turns only if it's atleast `LATERAL THRESHOLD` away from the `middle vertical line`, measured alone `width`. This does have a small problem. We'll look at it later.
 * For further improvements: look at `Day 2 : problems` below.
