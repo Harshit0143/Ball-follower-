@@ -46,7 +46,7 @@
 ### Going through the construction
 * Lists the problems I faced at varios steps. Can be skipped. Only final working steps are given above. 
 ###  Day 1-2 :
-* I first wanted to build something around `Computer Vision`. My first idea to this project is that I'd be able to run `Python` code on the `SmartPhone`. For this I was making a [Kivy](https://kivy.org) app but packing it using [Buildozer](https://buildozer.readthedocs.io/en/latest/) or [python-to-android](https://github.com/kivy/python-for-android#) using the steps given [here](https://kivy.org/doc/stable/gettingstarted/installation.html) wasn't working, and the the only thing I got was: `Build Failed`. If this worked, I wouldn't have needed my pc for the comunication. Also experimented with [ArduinoDroid - Arduino/ESP8266](https://play.google.com/store/apps/details?id=name.antonsmirnov.android.arduinodroid2&hl=en&gl=US) for the same bit it didn't work.  
+* I first wanted to build something around `Computer Vision`. My first idea to this project is that I'd be able to run `Python` code on the `SmartPhone`. For this I was making a [Kivy](https://kivy.org) app but packing it using [Buildozer](https://buildozer.readthedocs.io/en/latest/) or [python-to-android](https://github.com/kivy/python-for-android#) using the steps given [here](https://kivy.org/doc/stable/gettingstarted/installation.html) wasn't working, and the the only thing I got was: `Build Failed`. If this worked, I wouldn't have needed my pc for the comunication. Also experimented with [ArduinoDroid - Arduino/ESP8266](https://play.google.com/store/apps/details?id=name.antonsmirnov.android.arduinodroid2&hl=en&gl=US) for the same but it didn't work.  
 
 ###  Day 3 :
 * - [x] Loose connections: need a `Motor Driver Shield` 
